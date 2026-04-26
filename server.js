@@ -9,7 +9,6 @@ const readData = () => {
 const writeData = (data) => {
   fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
 };
-
 const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url === '/items') {
     const items = readData();
@@ -25,7 +24,6 @@ const server = http.createServer((req, res) => {
       res.writeHead(404);
       return res.end('Item not found');
     }
-
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(item));
   }
@@ -35,43 +33,54 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => {
       body += chunk.toString();
     });
-
     req.on('end', () => {
       const newItem = JSON.parse(body);
       const items = readData();
-
       newItem.id = Date.now();
       items.push(newItem);
-
       writeData(items);
-
       res.writeHead(201);
       res.end('Item created');
     });
   }
-
-  
+    
   else if (req.method === 'PUT' && req.url.startsWith('/items/')) {
     const id = parseInt(req.url.split('/')[2]);
     let body = '';
-
     req.on('data', chunk => {
       body += chunk.toString();
     });
-
     req.on('end', () => {
       const updatedData = JSON.parse(body);
       let items = readData();
-
       const index = items.findIndex(i => i.id === id);
-
       if (index === -1) {
         res.writeHead(404);
         return res.end('Item not found');
       }
-
       items[index] = { ...items[index], ...updatedData };
-
       writeData(items);
+      res.writeHead(200);
+      res.end('Item updated');
+    });
+  }
+  else if (req.method === 'DELETE' && req.url.startsWith('/items/')) {
+    const id = parseInt(req.url.split('/')[2]);
+    let items = readData();
+    const newItems = items.filter(i => i.id !== id);
+    writeData(newItems);
+    res.writeHead(200);
+    res.end('Item deleted');
+  }
+
+  else {
+    res.writeHead(404);
+    res.end('Route not found');
+  }
+});
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 
    
