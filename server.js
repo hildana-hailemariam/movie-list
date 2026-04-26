@@ -50,7 +50,7 @@ const server = http.createServer((req, res) => {
     });
   }
 
-  // PUT (UPDATE)
+  
   else if (req.method === 'PUT' && req.url.startsWith('/items/')) {
     const id = parseInt(req.url.split('/')[2]);
     let body = '';
@@ -78,8 +78,6 @@ const server = http.createServer((req, res) => {
       res.end('Item updated');
     });
   }
-
-  // DELETE
   else if (req.method === 'DELETE' && req.url.startsWith('/items/')) {
     const id = parseInt(req.url.split('/')[2]);
     let items = readData();
