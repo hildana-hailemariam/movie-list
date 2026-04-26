@@ -74,28 +74,4 @@ const server = http.createServer((req, res) => {
 
       writeData(items);
 
-      res.writeHead(200);
-      res.end('Item updated');
-    });
-  }
-  else if (req.method === 'DELETE' && req.url.startsWith('/items/')) {
-    const id = parseInt(req.url.split('/')[2]);
-    let items = readData();
-
-    const newItems = items.filter(i => i.id !== id);
-
-    writeData(newItems);
-
-    res.writeHead(200);
-    res.end('Item deleted');
-  }
-
-  else {
-    res.writeHead(404);
-    res.end('Route not found');
-  }
-});
-
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+   
