@@ -2,28 +2,20 @@ const http = require('http');
 const fs = require('fs');
 
 const PORT = 3000;
-
-// Helper: read data
 const readData = () => {
   const data = fs.readFileSync('data.json');
   return JSON.parse(data);
 };
-
-// Helper: write data
 const writeData = (data) => {
   fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
 };
 
 const server = http.createServer((req, res) => {
-
-  // GET ALL
   if (req.method === 'GET' && req.url === '/items') {
     const items = readData();
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(items));
   }
-
-  // GET ONE
   else if (req.method === 'GET' && req.url.startsWith('/items/')) {
     const id = parseInt(req.url.split('/')[2]);
     const items = readData();
@@ -37,8 +29,6 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(item));
   }
-
-  // POST (CREATE)
   else if (req.method === 'POST' && req.url === '/items') {
     let body = '';
 
@@ -50,7 +40,7 @@ const server = http.createServer((req, res) => {
       const newItem = JSON.parse(body);
       const items = readData();
 
-      newItem.id = Date.now(); // simple ID
+      newItem.id = Date.now();
       items.push(newItem);
 
       writeData(items);
